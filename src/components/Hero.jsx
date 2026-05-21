@@ -9,7 +9,7 @@ if (typeof window !== 'undefined') {
 const SLIDES = [
   {
     type: 'video',
-    src: '/assets/videos/0519-copy-4.mp4',
+    src: 'https://media.githubusercontent.com/media/MediaforgeThailand/mediaforge-production-house/main/public/assets/videos/0519-copy-4.mp4',
     eyebrow: '/ FEATURED PROJECT',
     title: 'MOTION CRAFTED',
     copy: 'We are a full-service production house crafting films, commercials, and branded stories. Watch the reel and explore the work behind every frame.',
@@ -314,7 +314,7 @@ export default function Hero() {
     <section className="hero hero--split" ref={heroRef}>
       <div className="hero__stack">
         <div className="hero__slide hero__slide--primary is-reveal-active" style={{ zIndex: 1, clipPath: FULL_FRAME }}>
-          <SlideMedia slide={HERO_SLIDE} mediaRef={heroMediaRef} muted={muted} withBackdrop />
+          <SlideMedia slide={HERO_SLIDE} mediaRef={heroMediaRef} muted={muted} />
           <SlideContent slide={HERO_SLIDE} />
           <button
             className="hero__mute-toggle"
