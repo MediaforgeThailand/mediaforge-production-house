@@ -9,7 +9,7 @@ if (typeof window !== 'undefined') {
 const SLIDES = [
   {
     type: 'video',
-    src: 'https://media.githubusercontent.com/media/MediaforgeThailand/mediaforge-production-house/main/public/assets/videos/0519-copy-4.mp4',
+    src: 'https://assets.mediaforge.co/videos/0519-copy-4.mp4',
     eyebrow: '/ FEATURED PROJECT',
     title: 'MOTION CRAFTED',
     copy: 'We are a full-service production house crafting films, commercials, and branded stories. Watch the reel and explore the work behind every frame.',
