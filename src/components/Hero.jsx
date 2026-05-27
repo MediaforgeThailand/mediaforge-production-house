@@ -9,7 +9,17 @@ if (typeof window !== 'undefined') {
 const SLIDES = [
   {
     type: 'video',
-    src: 'https://assets.mediaforge.co/videos/0519-copy-4.mp4',
+    src: '/assets/videos/deadisland-3-1080p.mp4',
+    poster: '/assets/images/deadisland-3-poster.jpg',
+    eyebrow: '/ FEATURED PROJECT',
+    title: 'DEAD ISLAND 3',
+    copy: 'A high-impact cinematic project built for a bold, game-ready world. Watch the hero cut and step into the campaign.',
+    cta: 'Watch Film'
+  },
+  {
+    type: 'video',
+    src: '/assets/videos/0519-copy-4.mp4',
+    poster: '/assets/images/0519-copy-4-poster.jpg',
     eyebrow: '/ FEATURED PROJECT',
     title: 'MOTION CRAFTED',
     copy: 'We are a full-service production house crafting films, commercials, and branded stories. Watch the reel and explore the work behind every frame.',
