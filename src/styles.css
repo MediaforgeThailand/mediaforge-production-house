@@ -364,7 +364,7 @@ ul { list-style: none; }
 
 .hero__title {
   grid-column: 1 / 7;
-  font-size: clamp(56px, 8vw, 120px);
+  font-size: clamp(42px, 6vw, 90px);
   line-height: 0.95;
   font-weight: 900;
   letter-spacing: -0.02em;
@@ -383,11 +383,14 @@ ul { list-style: none; }
 }
 
 .hero__copy {
-  grid-column: 7 / 12;
+  position: absolute;
+  right: calc(var(--grid-padding) + 88px);
+  bottom: var(--spacing05);
   font-size: 17px;
   line-height: 1.5;
   max-width: 480px;
   margin: 0;
+  text-align: left;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
 }
 
@@ -602,7 +605,10 @@ ul { list-style: none; }
   .hero__title, .hero__copy, .hero__slide-content .eyebrow, .hero__slide-content .cta {
     grid-column: 1 / 13;
   }
-  .hero__copy { margin-top: var(--spacing02); }
+  .hero__copy {
+    position: static;
+    margin-top: var(--spacing02);
+  }
 }
 
 @media (max-width: 720px) {
