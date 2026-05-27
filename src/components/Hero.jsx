@@ -18,36 +18,12 @@ const SLIDES = [
   },
   {
     type: 'video',
-    src: '/assets/videos/0519-copy-4.mp4',
+    src: '/assets/videos/0519-copy-4.webm',
     poster: '/assets/images/0519-copy-4-poster.jpg',
     eyebrow: '/ FEATURED PROJECT',
     title: 'MOTION CRAFTED',
     copy: 'We are a full-service production house crafting films, commercials, and branded stories. Watch the reel and explore the work behind every frame.',
     cta: 'Watch Showreel'
-  },
-  {
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1574482620811-1aa16ffe3c82?w=2000&q=85',
-    eyebrow: '/ SELECTED WORK',
-    title: 'NORTHERN LIGHT',
-    copy: 'A cinematic brand film shot across three countries — featuring real crew, real weather, no shortcuts.',
-    cta: 'Case Study'
-  },
-  {
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1604079628040-94301bb21b91?w=2000&q=85',
-    eyebrow: '/ SELECTED WORK',
-    title: 'CITY PULSE',
-    copy: 'A 60-second commercial campaign for a global beverage brand — choreographed, single take.',
-    cta: 'Case Study'
-  },
-  {
-    type: 'image',
-    src: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=2000&q=85',
-    eyebrow: '/ SELECTED WORK',
-    title: 'FIELD NOTES',
-    copy: 'Branded documentary series following farmers across Southeast Asia for the harvest season.',
-    cta: 'Case Study'
   }
 ]
 
@@ -61,6 +37,16 @@ const FULL_FRAME = 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)'
 const HORIZONTAL_LEFT = 'polygon(0% 0%, -35% 0%, 0% 100%, 0% 100%)'
 const HORIZONTAL_CENTER = 'polygon(-35% 0%, 135% 0%, 100% 100%, 0% 100%)'
 const HORIZONTAL_RIGHT = 'polygon(135% 0%, 100% 0%, 100% 100%, 100% 100%)'
+
+function playVideo(media) {
+  if (!media || media.tagName !== 'VIDEO') return
+
+  media.muted = true
+  const promise = media.play()
+  if (promise?.catch) {
+    promise.catch(() => {})
+  }
+}
 
 function SlideMedia({ slide, mediaRef, muted, withBackdrop = false }) {
   if (slide.type === 'video') {
@@ -145,6 +131,8 @@ export default function Hero() {
 
   const goToCarousel = useCallback((nextIndex, direction = 1) => {
     const total = CAROUSEL_SLIDES.length
+    if (total <= 1) return
+
     const currentIndex = activeCarouselRef.current
     const normalizedIndex = (nextIndex + total) % total
 
@@ -174,6 +162,7 @@ export default function Hero() {
     gsap.set(nextSlide, { clipPath: fromSide, zIndex: 3, pointerEvents: 'auto' })
     gsap.set(currentSlide, { clipPath: HORIZONTAL_CENTER, zIndex: 2, pointerEvents: 'none' })
     gsap.set(nextMedia, { scale: 1.12, x: xFrom })
+    playVideo(nextMedia)
 
     gsap.timeline({
       defaults: { duration: 0.82, ease: 'power1.inOut' },
@@ -182,6 +171,7 @@ export default function Hero() {
         gsap.set(nextSlide, { clipPath: HORIZONTAL_CENTER, zIndex: 2 })
         gsap.set(currentMedia, { scale: 1.12, x: xTo })
         gsap.set(nextMedia, { scale: 1, x: 0 })
+        playVideo(nextMedia)
         isAnimatingRef.current = false
       }
     })
@@ -197,6 +187,9 @@ export default function Hero() {
       const setCarouselReady = (ready) => {
         carouselAutoplayReadyRef.current = ready
         setCarouselRevealed(ready)
+        if (ready) {
+          playVideo(carouselMediaRef.current[activeCarouselRef.current])
+        }
       }
 
       gsap.set(carouselRef.current, { clipPath: SCROLL_HIDDEN })
@@ -225,6 +218,9 @@ export default function Hero() {
           onUpdate: (self) => {
             const isVisible = self.progress > 0.36
             setCarouselContentVisible(isVisible)
+            if (isVisible) {
+              playVideo(carouselMediaRef.current[activeCarouselRef.current])
+            }
 
             if (self.progress < 0.995) {
               setCarouselReady(false)
@@ -277,7 +273,7 @@ export default function Hero() {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      if (carouselAutoplayReadyRef.current) {
+      if (CAROUSEL_SLIDES.length > 1 && carouselAutoplayReadyRef.current) {
         goToCarousel(activeCarouselRef.current + 1, 1)
       }
     }, 10000)
@@ -287,7 +283,7 @@ export default function Hero() {
 
   useEffect(() => {
     const handleWheel = (event) => {
-      if (!carouselAutoplayReadyRef.current) return
+      if (!carouselAutoplayReadyRef.current || CAROUSEL_SLIDES.length <= 1) return
 
       const direction = event.deltaY > 0 ? 1 : -1
       const isAtFirstSlide = activeCarouselRef.current === 0
@@ -319,6 +315,11 @@ export default function Hero() {
       window.clearTimeout(wheelResetRef.current)
     }
   }, [goToCarousel])
+
+  useEffect(() => {
+    if (!carouselContentVisible) return
+    playVideo(carouselMediaRef.current[activeCarousel])
+  }, [activeCarousel, carouselContentVisible])
 
   return (
     <section className="hero hero--split" ref={heroRef}>
@@ -367,6 +368,7 @@ export default function Hero() {
             </div>
           ))}
 
+          {CAROUSEL_SLIDES.length > 1 ? (
           <div className="hero__carousel-controls" aria-label="Selected work carousel controls">
             <div className="hero__filmstrip">
               {CAROUSEL_SLIDES.map((slide, i) => (
@@ -411,6 +413,7 @@ export default function Hero() {
               ›
             </button>
           </div>
+          ) : null}
         </div>
       </div>
     </section>
