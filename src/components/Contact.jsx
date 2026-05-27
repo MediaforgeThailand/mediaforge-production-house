@@ -6,6 +6,7 @@ const initialForm = {
   company: '',
   project: '',
   budget: '',
+  phone: '',
   message: '',
   website: ''
 }
@@ -114,6 +115,17 @@ export default function Contact() {
             value={form.budget}
             onChange={updateField}
             placeholder="Budget range, launch date, or both"
+          />
+        </label>
+        <label>
+          <span>Phone</span>
+          <input
+            type="tel"
+            name="phone"
+            value={form.phone}
+            onChange={updateField}
+            autoComplete="tel"
+            placeholder="Phone number or LINE contact"
           />
         </label>
         <label className="contact__message">
