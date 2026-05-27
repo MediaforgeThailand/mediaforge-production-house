@@ -9,7 +9,7 @@ if (typeof window !== 'undefined') {
 const SLIDES = [
   {
     type: 'video',
-    src: '/assets/videos/deadisland-3-1080p.mp4',
+    src: '/assets/videos/deadisland-3-1080p.webm',
     poster: '/assets/images/deadisland-3-poster.jpg',
     eyebrow: '/ FEATURED PROJECT',
     title: 'DEAD ISLAND 3',

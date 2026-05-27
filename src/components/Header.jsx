@@ -24,8 +24,12 @@ export default function Header() {
   return (
     <header className={`site-header${hidden ? ' is-hidden' : ''}`}>
       <div className="site-header__inner">
-        <a href="#" className="logo reveal-mask" aria-label="Home">
-          <span className="reveal-inner">MEDIAFORGE</span>
+        <a href="#" className="site-logo" aria-label="Home">
+          <img
+            className="site-logo__image"
+            src="/assets/brand/studio-logo.png"
+            alt="MediaForge"
+          />
         </a>
         <nav className="primary-nav">
           <ul>
