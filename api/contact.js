@@ -1,6 +1,6 @@
-import { Resend } from 'resend'
-
 const TO_EMAIL = 'info@mediaforge.co'
+const SENDGRID_URL = 'https://api.sendgrid.com/v3/mail/send'
+const DEFAULT_CONTACT_RELAY_URL = 'https://fymncypboeubdikpbmqc.supabase.co/functions/v1/production-contact'
 
 function sendJson(response, status, body) {
   response.statusCode = status
@@ -44,16 +44,45 @@ export default async function handler(request, response) {
     return sendJson(response, 400, { message: 'Please complete the required fields.' })
   }
 
-  if (!process.env.RESEND_API_KEY) {
+  const relayUrl = process.env.CONTACT_RELAY_URL || DEFAULT_CONTACT_RELAY_URL
+  if (relayUrl) {
+    try {
+      const relayResponse = await fetch(relayUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, company, project, budget, message })
+      })
+      const relayBody = await relayResponse.json().catch(() => ({}))
+
+      if (relayResponse.ok) {
+        return sendJson(response, 200, relayBody?.ok ? relayBody : { ok: true })
+      }
+
+      if (!process.env.SENDGRID_API_KEY) {
+        return sendJson(response, relayResponse.status, {
+          message: relayBody?.message || 'Email could not be sent.'
+        })
+      }
+    } catch (error) {
+      console.error('[contact] Relay failed:', error)
+      if (!process.env.SENDGRID_API_KEY) {
+        return sendJson(response, 502, { message: 'Email could not be sent.' })
+      }
+    }
+  }
+
+  if (!process.env.SENDGRID_API_KEY) {
     return sendJson(response, 500, { message: 'Email service is not configured.' })
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY)
   const submittedAt = new Date().toLocaleString('en-US', {
     dateStyle: 'medium',
     timeStyle: 'short',
     timeZone: 'Asia/Bangkok'
   })
+  const subject = `New production inquiry from ${name}`
+  const fromEmail = process.env.CONTACT_FROM_EMAIL || process.env.SENDGRID_FROM_EMAIL || 'noreply@mediaforge.co'
+  const fromName = process.env.CONTACT_FROM_NAME || 'MediaForge Studio'
 
   const html = `
     <div style="font-family:Arial,sans-serif;color:#161616;line-height:1.5">
@@ -68,17 +97,50 @@ export default async function handler(request, response) {
       <p style="white-space:pre-line">${message}</p>
     </div>
   `
+  const text = [
+    'New production inquiry',
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Company: ${company || '-'}`,
+    `Project Type: ${project || '-'}`,
+    `Budget / Timeline: ${budget || '-'}`,
+    `Submitted: ${submittedAt} Bangkok time`,
+    '',
+    message
+  ].join('\n')
 
-  const { data, error } = await resend.emails.send({
-    from: process.env.CONTACT_FROM_EMAIL || 'MediaForge Studio <info@mediaforge.co>',
-    to: process.env.CONTACT_TO_EMAIL || TO_EMAIL,
-    subject: `New production inquiry from ${name}`,
-    html
+  const sendGridResponse = await fetch(SENDGRID_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      personalizations: [
+        {
+          to: [{ email: process.env.CONTACT_TO_EMAIL || TO_EMAIL }],
+          subject
+        }
+      ],
+      from: { email: fromEmail, name: fromName },
+      reply_to: { email, name },
+      subject,
+      content: [
+        { type: 'text/plain', value: text },
+        { type: 'text/html', value: html }
+      ],
+      categories: ['production-house-contact']
+    })
   })
 
-  if (error) {
-    return sendJson(response, 502, { message: error.message || 'Email could not be sent.' })
+  if (!sendGridResponse.ok) {
+    const detail = await sendGridResponse.text().catch(() => '')
+    console.error(`[contact] SendGrid ${sendGridResponse.status}: ${detail.slice(0, 400)}`)
+    return sendJson(response, 502, { message: 'Email could not be sent.' })
   }
 
-  return sendJson(response, 200, { ok: true, id: data?.id })
+  return sendJson(response, 200, {
+    ok: true,
+    id: sendGridResponse.headers.get('x-message-id')
+  })
 }
