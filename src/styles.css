@@ -651,6 +651,328 @@ ul { list-style: none; }
   }
 }
 
+/* CUT SCENE DRAFT */
+.cut-scenes {
+  position: relative;
+  min-height: 100svh;
+  padding: calc(var(--spacing05) + 28px) var(--grid-padding) calc(var(--spacing05) + 44px);
+  color: var(--ink);
+  background: #fff;
+  overflow: hidden;
+}
+
+.cut-scenes::before {
+  content: none;
+}
+
+.cut-scenes__header {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--grid-gap);
+  align-items: end;
+  margin-bottom: var(--spacing04);
+}
+
+.cut-scenes__header .eyebrow {
+  grid-column: 1 / 4;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.cut-scenes__header h2 {
+  grid-column: 1 / 7;
+  margin: 0;
+  font-size: 64px;
+  line-height: 0.96;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.cut-scenes__header h2 .reveal-inner {
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.cut-scenes__intro {
+  grid-column: 8 / 13;
+  max-width: 460px;
+  margin: 0;
+  justify-self: end;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.cut-scenes__intro .reveal-inner {
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8),
+    0 3px 12px rgba(0, 0, 0, 0.12);
+}
+
+.cut-scenes__stage {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 7.4fr) minmax(320px, 4.6fr);
+  gap: var(--grid-gap);
+  align-items: stretch;
+  min-height: 0;
+}
+
+.cut-scenes__feature {
+  position: relative;
+  min-height: 56svh;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius03);
+  background: #000;
+  isolation: isolate;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+}
+
+.cut-scenes__feature video,
+.cut-scenes__card video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cut-scenes__feature::after {
+  content: "";
+  position: absolute;
+  inset: 45% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.76));
+  pointer-events: none;
+}
+
+.cut-scenes__feature-caption {
+  position: absolute;
+  left: var(--spacing03);
+  right: var(--spacing03);
+  bottom: var(--spacing03);
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing03);
+}
+
+.cut-scenes__feature-caption span,
+.cut-scenes__controls span,
+.cut-scenes__card span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  font-variant-numeric: tabular-nums;
+  text-transform: uppercase;
+}
+
+.cut-scenes__feature-caption strong {
+  max-width: 70%;
+  text-align: right;
+  font-size: 24px;
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.cut-scenes__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  max-height: 64svh;
+  overflow: auto;
+  padding: 0 4px 4px 0;
+}
+
+.cut-scenes__card {
+  position: relative;
+  min-height: 138px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: var(--radius02);
+  background: #0b0b0b;
+  color: #fff;
+  text-align: left;
+  isolation: isolate;
+  transition:
+    border-color 0.25s var(--ease-out),
+    transform 0.25s var(--ease-out),
+    opacity 0.25s var(--ease-out);
+}
+
+.cut-scenes__card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.72));
+}
+
+.cut-scenes__card video {
+  opacity: 0.68;
+  transform: scale(1.04);
+  transition:
+    opacity 0.25s var(--ease-out),
+    transform 0.45s var(--ease-out);
+}
+
+.cut-scenes__card span,
+.cut-scenes__card strong {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  z-index: 2;
+}
+
+.cut-scenes__card span {
+  top: 12px;
+  color: var(--brand-lime);
+}
+
+.cut-scenes__card strong {
+  bottom: 12px;
+  font-size: 13px;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.cut-scenes__card:hover,
+.cut-scenes__card.is-active {
+  border-color: var(--brand-lime);
+  transform: translateY(-2px);
+  opacity: 1;
+}
+
+.cut-scenes__card:hover video,
+.cut-scenes__card.is-active video {
+  opacity: 0.9;
+  transform: scale(1);
+}
+
+.cut-scenes__controls {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--spacing03) + 156px);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  transform: translateX(-50%);
+}
+
+.cut-scenes__controls button {
+  width: 48px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--brand-lime);
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 900;
+  transition:
+    transform 0.25s var(--ease-out),
+    background-color 0.25s var(--ease-out);
+}
+
+.cut-scenes__controls button:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.cut-scenes__controls span {
+  min-width: 78px;
+  text-align: center;
+}
+
+@media (max-width: 1100px) {
+  .cut-scenes {
+    padding-bottom: calc(var(--spacing05) + 64px);
+  }
+
+  .cut-scenes__header h2,
+  .cut-scenes__intro {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .cut-scenes__header h2 {
+    font-size: 52px;
+  }
+
+  .cut-scenes__stage {
+    grid-template-columns: 1fr;
+  }
+
+  .cut-scenes__feature {
+    min-height: 46svh;
+  }
+
+  .cut-scenes__grid {
+    grid-template-columns: repeat(4, minmax(160px, 1fr));
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 720px) {
+  .cut-scenes {
+    padding-top: calc(var(--spacing05) + 12px);
+  }
+
+  .cut-scenes__header {
+    display: block;
+  }
+
+  .cut-scenes__header h2 {
+    margin-top: var(--spacing02);
+    font-size: 40px;
+  }
+
+  .cut-scenes__intro {
+    margin-top: var(--spacing02);
+    font-size: 15px;
+  }
+
+  .cut-scenes__feature {
+    min-height: 320px;
+  }
+
+  .cut-scenes__feature-caption {
+    display: block;
+  }
+
+  .cut-scenes__feature-caption strong {
+    display: block;
+    max-width: none;
+    margin-top: 8px;
+    text-align: left;
+    font-size: 18px;
+  }
+
+  .cut-scenes__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cut-scenes__card {
+    min-height: 112px;
+  }
+}
+
 /* Generic .eyebrow (non-hero usage) */
 .eyebrow {
   font-size: 13px;
